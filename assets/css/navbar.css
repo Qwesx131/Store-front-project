@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+ 
+}
+
+nav{
+    background-color: black;
+    color: white;
+    display: flex;
+    gap: 15vw;
+}
+
+nav a{
+    
+    color: white;
+    text-decoration: none;
+    margin: 10px;
+    padding: 10px;
+    font-size: 20px;
+    gap: 20vw;
+}
+    
+
+#knapper {
+    margin-top: 5vh;
+    
+}
+
+#logoContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav a:hover {
+    background-color: white;
+    
+    border-radius: 8px;
+    background-color: grey;
+    color: black;
+    
+}

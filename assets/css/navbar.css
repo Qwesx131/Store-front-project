@@ -24,6 +24,7 @@ nav a{
 #knapper {
     margin-top: 5vh;
     
+    
 }
 
 #logoContainer{
@@ -40,3 +41,10 @@ nav a:hover {
     color: black;
     
 }
+
+@media (max-width: 768px) {
+   #knapper {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+   }}

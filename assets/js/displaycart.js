@@ -17,12 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getCurrentCategory() {
     const path = window.location.pathname.toLowerCase();
-
     if (path.includes("foodstuff")) return "groceries";
     if (path.includes("indretning")) return "home-decoration";
     if (path.includes("furniture")) return "furniture";
     if (path.includes("dufte") || path.includes("fragrance")) return "fragrances";
-
     return "homepage";
   }
 
@@ -32,37 +30,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     switch (category) {
       case "fragrances":
-        categoryProducts = allProducts
-          .filter((p) => p.category.toLowerCase() === "fragrances")
-          .slice(0, 3); // show only 3
+        categoryProducts = allProducts.filter(p => p.category.toLowerCase() === "fragrances").slice(0, 3);
         break;
-
       case "home-decoration":
-        categoryProducts = allProducts
-          .filter((p) => p.category.toLowerCase() === "home-decoration")
-          .slice(0, 3);
+        categoryProducts = allProducts.filter(p => p.category.toLowerCase() === "home-decoration").slice(0, 3);
         break;
-
       case "furniture":
-        categoryProducts = allProducts
-          .filter((p) => p.category.toLowerCase() === "furniture")
-          .slice(0, 3);
+        categoryProducts = allProducts.filter(p => p.category.toLowerCase() === "furniture").slice(0, 3);
         break;
-
       case "groceries":
-        categoryProducts = allProducts
-          .filter((p) => p.category.toLowerCase() === "groceries")
-          .slice(0, 3);
+        categoryProducts = allProducts.filter(p => p.category.toLowerCase() === "groceries").slice(0, 3);
         break;
-
       case "homepage":
-        categoryProducts = allProducts.sort(() => 0.5 - Math.random()).slice(0, 3); // random 3
+        categoryProducts = allProducts.sort(() => 0.5 - Math.random()).slice(0, 3);
         break;
-
       default:
-        productDisplay.innerHTML = `
-          <p style="text-align:center;">Denne side viser ikke produkter.</p>
-        `;
+        productDisplay.innerHTML = `<p style="text-align:center;">Denne side viser ikke produkter.</p>`;
         return;
     }
 
@@ -82,7 +65,26 @@ document.addEventListener("DOMContentLoaded", () => {
         <h3>${p.title}</h3>
         <p class="price">$${p.price}</p>
       `;
+
+      // Buy Now button
+      const buyButton = document.createElement("button");
+      buyButton.textContent = "Buy Now";
+      buyButton.className = "buy-now";
+      buyButton.addEventListener("click", (e) => {
+        e.stopPropagation(); // Prevent opening product details
+        if (typeof cart !== "undefined") {
+          cart.addItem(p);
+          alert(`Added "${p.title}" to your cart!`);
+        } else {
+          console.error("Cart is not initialized.");
+        }
+      });
+
+      card.appendChild(buyButton);
+
+      // Click card to show details
       card.addEventListener("click", () => showProductDetails(p.id));
+
       row.appendChild(card);
     });
 
@@ -106,9 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
-    document
-      .getElementById("backButton")
-      .addEventListener("click", showCategoryProducts);
+    document.getElementById("backButton").addEventListener("click", showCategoryProducts);
   }
 
   loadProducts();

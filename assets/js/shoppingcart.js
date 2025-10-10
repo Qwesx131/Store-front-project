@@ -7,7 +7,6 @@ class ShoppingCart {
 
     addItem(product) {
         const existingItem = this.items.find(item => item.id === product.id);
-        
         if (existingItem) {
             existingItem.quantity += 1;
         } else {
@@ -19,7 +18,6 @@ class ShoppingCart {
                 thumbnail: product.thumbnail
             });
         }
-        
         this.updateTotal();
         this.saveCart();
         this.updateCartDisplay();
@@ -56,18 +54,20 @@ class ShoppingCart {
     updateCartDisplay() {
         const cartCount = document.getElementById('cart-count');
         const totalItems = this.items.reduce((sum, item) => sum + item.quantity, 0);
-        cartCount.textContent = totalItems;
+        if (cartCount) cartCount.textContent = totalItems;
     }
 
     showCart() {
+        const existingModal = document.querySelector('.cart-modal');
+        if (existingModal) existingModal.remove();
+
         const cartModal = document.createElement('div');
         cartModal.className = 'cart-modal';
-        
-        let cartContent = `
+        cartModal.innerHTML = `
             <div class="cart-content">
                 <h2>Shopping Cart</h2>
                 <div class="cart-items">
-                    ${this.items.map(item => `
+                    ${this.items.length > 0 ? this.items.map(item => `
                         <div class="cart-item">
                             <img src="${item.thumbnail}" alt="${item.title}">
                             <div class="item-details">
@@ -77,22 +77,47 @@ class ShoppingCart {
                             </div>
                             <button onclick="cart.removeItem(${item.id})">Remove</button>
                         </div>
-                    `).join('')}
+                    `).join('') : '<p>Your cart is empty.</p>'}
                 </div>
                 <div class="cart-total">
-                    <h3>Total: $${this.total}</h3>
+                    <h3>Total: $${this.total.toFixed(2)}</h3>
                 </div>
-                <button onclick="this.closest('.cart-modal').remove()">Close</button>
+                <div class="cart-buttons">
+                    <button onclick="cart.openCheckoutModal()" ${this.items.length === 0 ? 'disabled' : ''}>Checkout</button>
+                    <button onclick="this.closest('.cart-modal').remove()">Close</button>
+                </div>
             </div>
         `;
-        
-        cartModal.innerHTML = cartContent;
         document.body.appendChild(cartModal);
+    }
+
+    openCheckoutModal() {
+        const checkoutModal = document.createElement('div');
+        checkoutModal.className = 'checkout-modal';
+        checkoutModal.innerHTML = `
+            <div class="checkout-content">
+                <h2>Checkout</h2>
+                <p>Total Amount: $${this.total.toFixed(2)}</p>
+                <p>Confirm your purchase?</p>
+                <div class="checkout-buttons">
+                    <button onclick="cart.completeCheckout()">Confirm</button>
+                    <button onclick="this.closest('.checkout-modal').remove()">Cancel</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(checkoutModal);
+    }
+
+    completeCheckout() {
+        alert('Thank you for your purchase!');
+        this.items = [];
+        this.total = 0;
+        this.saveCart();
+        this.updateCartDisplay();
+        document.querySelectorAll('.checkout-modal, .cart-modal').forEach(m => m.remove());
     }
 }
 
 // Initialize cart
 const cart = new ShoppingCart();
-
-// Add click event to cart icon
 document.getElementById('cart-icon').addEventListener('click', () => cart.showCart());
